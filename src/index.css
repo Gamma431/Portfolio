@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+
+.color-p{
+    color: #6d64e9;
+}
+.bg-p{
+    background-color: #6d64e9;
+}
+.bg-s{
+    background-color:#c48ea6;
+}
+.bg-t{
+    background-color: #b1c6c1;
+}
+.color-s{
+    color: #c48ea6;
+}
+.color-t{
+    color: #b1c6c1;
+}
+.font-p{
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
