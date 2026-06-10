@@ -7,7 +7,7 @@ export default function Nav() {
 
         <div className="w-[55%] h-full flex justify-evenly items-center text-white/70 text-[20px] ">
             <Link to="/">Home</Link>
-            <Link to="/about">Aobut</Link>
+            <Link to="/about">About</Link>
             <Link to="/projects">Projects</Link>
             <Link to="/stats">Stats</Link>
             <Link to="/contact">Contact</Link>

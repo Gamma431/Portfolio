@@ -1,7 +1,7 @@
 
 export default function Hero() {
   return (
-    <div className="w-full h-[80vh] flex justify-center items-center gap-[2%] px-[8%] border-b border-white/80">
+    <div className="w-full h-[80vh] flex justify-center items-center gap-[2%] px-[8%] border-b border-white/30">
       <div className="w-[50%] h-full flex flex-col justify-center gap-[3%]">
         <p className="text-[35px] text-white/70">Hi, Im</p>
         <h2 className="color-p text-[130px]">Arman</h2>

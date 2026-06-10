@@ -1,6 +1,7 @@
 import {HashRouter, Route, Routes} from "react-router";
 import Home from './pages/Home';
 import Nav from "./components/Nav";
+import Footer from "./components/Footer";
 
 function App() {
 
@@ -11,6 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
         </Routes>
+        <Footer />
       </HashRouter>
     </div>
   )
