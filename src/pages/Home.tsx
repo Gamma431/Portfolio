@@ -4,7 +4,7 @@ import Section2 from "../components/homeSections/Section2";
 
 export default function Home() {
   return (
-    <div className="w-full h-auto p-[2%] bg-blackd">
+    <div className="w-full h-auto p-[2%] bg-black">
         <Hero />
         <Section1 />
         <Section2 />
