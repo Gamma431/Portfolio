@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
-
+*{
+    scroll-behavior: smooth;
+}
 .color-p{
     color: #6d64e9;
 }
