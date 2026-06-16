@@ -6,14 +6,25 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
+// Updated CORS to allow requests from your frontend site
+// Replace the URL below with your actual deployed frontend URL (e.g., https://your-site.onrender.com)
+app.use(cors({
+  origin: "*", 
+  methods: ["GET"],
+}));
 app.use(express.json());
 
-const headers = {
-  Authorization: `ApeKey ${process.env.APE_KEY}`,
-};
+// Root route to fix "Cannot GET /"
+app.get("/", (req, res) => {
+  res.send("API is active and running.");
+});
 
 app.get("/api/stats", async (req, res) => {
+  // Headers defined here so they are always fresh and have access to process.env
+  const headers = {
+    Authorization: `ApeKey ${process.env.APE_KEY}`,
+  };
+
   try {
     const [statsRes, lastRes, resultsRes] = await Promise.all([
       fetch("https://api.monkeytype.com/users/stats", { headers }),
@@ -21,22 +32,18 @@ app.get("/api/stats", async (req, res) => {
       fetch("https://api.monkeytype.com/results?limit=10", { headers }),
     ]);
 
-    // ---- SAFE JSON PARSING ----
     const statsData = await statsRes.json().catch(() => null);
     const lastData = await lastRes.json().catch(() => null);
 
-    // results can break (HTML or different structure)
     let resultsData;
     const rawResultsText = await resultsRes.text();
 
     try {
       resultsData = JSON.parse(rawResultsText);
     } catch (e) {
-      console.log(" results endpoint did not return JSON");
       resultsData = { data: [] };
     }
 
-    // ---- SAFE ARRAY HANDLING ----
     const historyRaw =
       Array.isArray(resultsData?.data)
         ? resultsData.data
@@ -50,15 +57,13 @@ app.get("/api/stats", async (req, res) => {
       timestamp: x.timestamp ?? null,
     }));
 
-    // ---- SAFE RESPONSE ----
-   res.json({
-    statsData,
-    lastData,
-    resultsData
-});
+    res.json({
+      statsData: statsData?.data ?? null,
+      lastData: lastData?.data ?? null,
+      history
+    });
   } catch (err) {
-    console.log(" Backend error:", err);
-
+    console.error("Backend error:", err);
     res.status(500).json({
       message: "Something went wrong",
       error: err.message,
@@ -66,6 +71,7 @@ app.get("/api/stats", async (req, res) => {
   }
 });
 
-app.listen(process.env.PORT || 3001, () => {
-  console.log(`running on ${process.env.PORT || 3001}`);
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`running on ${PORT}`);
 });
