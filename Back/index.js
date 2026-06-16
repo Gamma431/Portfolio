@@ -6,21 +6,19 @@ dotenv.config();
 
 const app = express();
 
-// Updated CORS to allow requests from your frontend site
-// Replace the URL below with your actual deployed frontend URL (e.g., https://your-site.onrender.com)
+// CORS is now enabled to allow requests from any origin
 app.use(cors({
   origin: "*", 
   methods: ["GET"],
 }));
 app.use(express.json());
 
-// Root route to fix "Cannot GET /"
+// Root route to ensure the service shows as active
 app.get("/", (req, res) => {
   res.send("API is active and running.");
 });
 
 app.get("/api/stats", async (req, res) => {
-  // Headers defined here so they are always fresh and have access to process.env
   const headers = {
     Authorization: `ApeKey ${process.env.APE_KEY}`,
   };
