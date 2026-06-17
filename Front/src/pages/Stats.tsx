@@ -1,154 +1,231 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"
 
 type StatsResponse={
-  statsData:{
-    completedTests:number
-    startedTests:number
-    timeTyping:number
-  }|null
 
-  lastData:{
-    wpm:number
-    acc:number
-    consistency:number
-    timestamp:number
-  }|null
+statsData:{
+_id:string
+completedTests:number
+startedTests:number
+timeTyping:number
+}|null
 
-  history:{
-    wpm:number
-    acc:number
-    timestamp:number|null
-  }[]
+lastData:{
+_id:string
+uid:string
+wpm:number
+rawWpm:number
+acc:number
+timestamp:number
+consistency:number
+
+chartData:{
+
+wpm:number[]
+
+burst:number[]
+
+err:number[]
+
+}
+
+}|null
+
+graph:number[]
+
 }
 
 export default function Stats(){
 
-  const [data,setData]=useState<StatsResponse|null>(null)
-  const [loading,setLoading]=useState(true)
-  const [error,setError]=useState<string|null>(null)
+const [data,setData]=useState<StatsResponse|null>(null)
 
-  useEffect(()=>{
+const [loading,setLoading]=useState(true)
 
-    async function fetchData(){
+const [error,setError]=useState<string|null>(null)
 
-      try{
+useEffect(()=>{
 
-        setLoading(true)
+async function fetchData(){
 
-        const res=await fetch("https://portfolio-fz7v.onrender.com/api/stats")
+try{
 
-        if(!res.ok) throw new Error("Failed to fetch")
+setLoading(true)
 
-        const json=await res.json()
+const res=await fetch("https://portfolio-fz7v.onrender.com/api/stats")
 
-        console.log(json)
+if(!res.ok) throw new Error("Failed to fetch")
 
-        setData(json)
+const json=await res.json()
 
-      }
+console.log(json)
 
-      catch(err){
+setData(json)
 
-        setError(err instanceof Error?err.message:"Error")
+}
 
-      }
+catch(err){
 
-      finally{
+setError(err instanceof Error?err.message:"Error")
 
-        setLoading(false)
+}
 
-      }
+finally{
 
-    }
+setLoading(false)
 
-    fetchData()
+}
 
-  },[])
+}
 
-  if(loading) return <div className="min-h-screen bg-zinc-950 flex items-center justify-center text-purple-400">Loading...</div>
+fetchData()
 
-  if(error) return <div className="min-h-screen bg-zinc-950 flex items-center justify-center text-red-400">Error: {error}</div>
+},[])
 
-  if(!data) return null
+if(loading){
 
-  return(
+return(
 
-    <div className="min-h-screen bg-zinc-950 text-white p-6">
+<div className="min-h-screen bg-zinc-950 flex justify-center items-center text-purple-400">
 
-      <h1 className="text-3xl font-bold mb-8 text-transparent bg-clip-text bg-linear-to-r from-purple-400 to-indigo-400">
-        Typing Stats
-      </h1>
+Loading...
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+</div>
 
-        <Box label="Completed Tests" value={data.statsData?.completedTests??0}/>
+)
 
-        <Box label="Started Tests" value={data.statsData?.startedTests??0}/>
+}
 
-        <Box label="Time Typing" value={`${Math.round((data.statsData?.timeTyping??0)/60)}m`}/>
+if(error){
 
-        <Box label="Last WPM" value={data.lastData?.wpm??0}/>
+return(
 
-        <Box label="Accuracy" value={`${data.lastData?.acc??0}%`}/>
+<div className="min-h-screen bg-zinc-950 flex justify-center items-center text-red-400">
 
-        <Box label="Consistency" value={`${data.lastData?.consistency??0}%`}/>
+{error}
 
-      </div>
+</div>
 
-      <h2 className="mt-10 mb-4 text-xl font-semibold text-zinc-300">
-        Recent History
-      </h2>
+)
 
-      <div className="space-y-3">
+}
 
-        {data.history.map((h,i)=>(
+if(!data) return null
 
-          <div key={i} className="flex justify-between items-center bg-zinc-900/40 border border-white/5 backdrop-blur-md px-6 py-4 rounded-2xl">
+return(
 
-            <span className="font-mono text-lg text-purple-300">
-              {h.wpm} WPM
-            </span>
+<div className="min-h-screen bg-zinc-950 text-white p-10">
 
-            <span className="text-zinc-300">
-              {h.acc}%
-            </span>
+<h1 className="text-5xl font-bold mb-10 text-transparent bg-clip-text bg-linear-to-r from-purple-400 to-indigo-400">
 
-            <span className="text-zinc-500 text-xs tabular-nums">
+Typing Stats
 
-              {h.timestamp
-                ? new Date(h.timestamp).toLocaleDateString()
-                : "--"}
+</h1>
 
-            </span>
+<div className="grid grid-cols-2 md:grid-cols-4 gap-6">
 
-          </div>
+<Box
 
-        ))}
+label="Current WPM"
 
-      </div>
+value={data.lastData?.wpm.toFixed(0)??0}
 
-    </div>
+/>
 
-  )
+<Box
+
+label="Accuracy"
+
+value={`${data.lastData?.acc.toFixed(1)??0}%`}
+
+/>
+
+<Box
+
+label="Consistency"
+
+value={`${data.lastData?.consistency.toFixed(1)??0}%`}
+
+/>
+
+<Box
+
+label="Completed Tests"
+
+value={data.statsData?.completedTests??0}
+
+/>
+
+<Box
+
+label="Started Tests"
+
+value={data.statsData?.startedTests??0}
+
+/>
+
+<Box
+
+label="Typing Time"
+
+value={`${Math.round((data.statsData?.timeTyping??0)/3600)}h`}
+
+/>
+
+</div>
+
+<h2 className="text-2xl font-semibold mt-14 mb-6">
+
+Recent Test Graph Data
+
+</h2>
+
+<div className="flex gap-2 items-end h-50 bg-zinc-900/50 rounded-3xl p-6 border border-white/5">
+
+{data.graph.map((wpm,i)=>(
+
+<div
+
+key={i}
+
+className="flex-1 bg-linear-to-t from-indigo-700 to-purple-400 rounded-t-xl"
+
+style={{
+
+height:`${wpm}px`
+
+}}
+
+/>
+
+))}
+
+</div>
+
+</div>
+
+)
 
 }
 
 function Box({label,value}:{label:string,value:string|number}){
 
-  return(
+return(
 
-    <div className="bg-zinc-900/60 border border-white/5 backdrop-blur-xl p-5 rounded-2xl">
+<div className="bg-zinc-900/60 border border-white/5 backdrop-blur-xl rounded-3xl p-6">
 
-      <div className="text-xs uppercase tracking-wider text-zinc-500 mb-1">
-        {label}
-      </div>
+<p className="text-zinc-500 text-sm uppercase">
 
-      <div className="text-2xl font-bold text-white tabular-nums">
-        {value}
-      </div>
+{label}
 
-    </div>
+</p>
 
-  )
+<h2 className="text-4xl font-bold mt-2">
+
+{value}
+
+</h2>
+
+</div>
+
+)
 
 }
