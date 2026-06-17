@@ -70,7 +70,9 @@ export default function Section1() {
             <p className="text-[16px]">Open to Freelance projects and full-time oppertunities</p>
           </div>
           <button className="w-[30%] h-full rounded-2xl shadow-2xl border border-indigo-500/70 bg-indigo-500/10">
-            View Resume
+            <a href="/Arman_Ghazaryan_Resume.pdf" target="_blank" rel="noopener noreferrer" className="w-full h-full rounded-2xl shadow-2xl border border-indigo-500/70 bg-indigo-500/10 flex justify-center items-center">
+              View Resume
+            </a>
           </button>
         </div>
       </div>
