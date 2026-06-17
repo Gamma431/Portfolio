@@ -1,41 +1,41 @@
-import {HashRouter} from "react-router";
-import Nav from "./components/Nav";
-import Footer from "./components/Footer";
-import { useEffect, } from "react";
-import { useLocation } from "react-router";
-import AnimateRoutes from "./components/AnimateRoutes";
-function App() {
+import {useEffect,useState} from "react"
+import {HashRouter,useLocation} from "react-router"
+import Nav from "./components/Nav"
+import Footer from "./components/Footer"
+import AnimateRoutes from "./components/AnimateRoutes"
 
+function ScrollToTop(){
+  const {pathname}=useLocation()
 
-useEffect(() => {
-  fetch("http://localhost:3001/api/stats")
-    .then(res => res.json())
-    .then(data => {
-      console.log(data);
-    });
-}, []);
+  useEffect(()=>{
+    window.scrollTo(0,0)
+  },[pathname])
 
-    // ensure Nav is typed to accept the sidebar setter prop
-  function ScrollToTop() {
-  const { pathname } = useLocation()
-
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [pathname])
   return null
 }
 
-  return (
-    <div className="w-full h-auto p-[2%] bg-linear-to-b from-[#010209] to-[#12041d] font-p">
+export default function App(){
+  const [dark,setDark]=useState(true)
+
+  useEffect(()=>{
+    fetch("https://portfolioback-oh5r.onrender.com/api/stats")
+    .then(res=>res.json())
+    .then(data=>console.log(data))
+    .catch(err=>console.log(err))
+  },[])
+
+  return(
+    <div className={
+dark
+? "theme-dark min-h-screen transition-all duration-300"
+: "theme-light min-h-screen transition-all duration-300"
+}>
       <HashRouter>
-        <ScrollToTop />
-        <AnimateRoutes />
-        <Nav/>
-        
-        <Footer />
+        <ScrollToTop/>
+        <Nav dark={dark} setDark={setDark}/>
+        <AnimateRoutes/>
+        <Footer/>
       </HashRouter>
     </div>
   )
 }
-
-export default App
