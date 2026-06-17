@@ -50,7 +50,7 @@ try{
 
 setLoading(true)
 
-const res=await fetch("https://portfolio-fz7v.onrender.com/api/stats")
+const res=await fetch("https://portfolioback-oh5r.onrender.com/api/stats")
 
 if(!res.ok) throw new Error("Failed to fetch")
 
