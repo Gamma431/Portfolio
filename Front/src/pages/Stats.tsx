@@ -1,24 +1,72 @@
 import {useEffect,useState} from "react"
 
+type LastData={
+  _id:string
+  uid:string
+  wpm:number
+  rawWpm:number
+  acc:number
+  timestamp:number
+  consistency:number
+  restartCount:number
+  testDuration:number
+  mode:string
+  mode2:string
+  chartData:{wpm:number[],burst:number[],err:number[]}
+}
+
+type ResultData={
+  wpm?:number
+  rawWpm?:number
+  acc?:number
+}
+
 type StatsResponse={
   statsData:{_id:string,completedTests:number,startedTests:number,timeTyping:number}|null
-  lastData:{_id:string,uid:string,wpm:number,rawWpm:number,acc:number,timestamp:number,consistency:number,restartCount:number,testDuration:number,mode:string,mode2:string,chartData:{wpm:number[],burst:number[],err:number[]}}|null
+  lastData:LastData|null
   graph:number[]
+  resultsData?:ResultData[]
 }
+
+type MonkeyProfileResponse={
+  profile:{
+    name?:string
+    xp?:number
+    streak?:number
+    maxStreak?:number
+    isPremium?:boolean
+    typingStats?:{completedTests?:number,startedTests?:number,timeTyping?:number}
+    details?:{bio?:string}
+  }|null
+  last:LastData|null
+}|null
 
 export default function Stats(){
   const [data,setData]=useState<StatsResponse|null>(null)
+  const [profileData,setProfileData]=useState<MonkeyProfileResponse>(null)
   const [loading,setLoading]=useState(true)
   const [error,setError]=useState<string|null>(null)
+
+  const backendUrl="https://portfolioback-oh5r.onrender.com"
 
   useEffect(()=>{
     async function fetchData(){
       try{
         setLoading(true)
-        const res=await fetch("https://portfolioback-oh5r.onrender.com/api/stats")
+        const res=await fetch(`${backendUrl}/api/stats`)
         if(!res.ok) throw new Error("Failed to fetch stats")
         const json=await res.json()
         setData(json)
+
+        try{
+          const profileRes=await fetch(`${backendUrl}/api/monkey-profile`)
+          if(profileRes.ok){
+            const profileJson=await profileRes.json()
+            setProfileData(profileJson)
+          }
+        }catch(err){
+          console.log("Profile route not ready yet",err)
+        }
       }catch(err){
         setError(err instanceof Error?err.message:"Error")
       }finally{
@@ -32,17 +80,29 @@ export default function Stats(){
   if(error) return <div className="min-h-screen flex justify-center items-center text-red-400 text-2xl">{error}</div>
   if(!data) return null
 
+  const profile=profileData?.profile
+  const profileStats=profile?.typingStats
   const wpm=data.lastData?.wpm??0
   const raw=data.lastData?.rawWpm??0
   const acc=data.lastData?.acc??0
   const consistency=data.lastData?.consistency??0
-  const completed=data.statsData?.completedTests??0
-  const started=data.statsData?.startedTests??0
-  const typingHours=Math.round((data.statsData?.timeTyping??0)/3600)
+  const completed=profileStats?.completedTests??data.statsData?.completedTests??0
+  const started=profileStats?.startedTests??data.statsData?.startedTests??0
+  const timeTyping=profileStats?.timeTyping??data.statsData?.timeTyping??0
+  const typingHours=Math.round(timeTyping/3600)
   const duration=data.lastData?.testDuration?.toFixed(0)??0
   const mode=`${data.lastData?.mode??"time"} ${data.lastData?.mode2??""}`
   const graph=data.graph.length?data.graph:data.lastData?.chartData?.wpm??[]
   const max=Math.max(...graph,1)
+  const username="Shiroiha"
+  const xp=profile?.xp??0
+  const level=xp?Math.floor(Math.sqrt(xp/100)):0
+  const xpPercent=xp?Math.min(100,Math.floor((xp%1000)/10)):45
+  const resultList=data.resultsData??[]
+  const avg=(arr:number[])=>arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:0
+  const avgWpm=resultList.length?avg(resultList.map(el=>el.wpm??0).filter(Boolean)):graph.length?avg(graph):wpm
+  const avgRaw=resultList.length?avg(resultList.map(el=>el.rawWpm??0).filter(Boolean)):raw
+  const avgAcc=resultList.length?avg(resultList.map(el=>el.acc??0).filter(Boolean)):acc
 
   return(
     <div className="w-full min-h-screen px-[5%] pt-[14vh] pb-[6%] relative overflow-hidden theme-text">
@@ -51,6 +111,50 @@ export default function Stats(){
       <div className="w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-indigo-700/20 rounded-full blur-[120px] md:blur-[160px] absolute bottom-[5%] right-[-20%] md:right-[-10%]"></div>
 
       <div className="w-full relative z-10">
+
+        <div className="w-full rounded-[35px] border theme-border theme-card backdrop-blur-xl theme-shadow p-[5%] lg:p-[3%] mb-[5%] overflow-hidden relative">
+          <div className="w-[300px] h-[300px] bg-indigo-500/15 rounded-full blur-[110px] absolute top-[-100px] right-[-80px]"></div>
+          <div className="w-[250px] h-[250px] bg-purple-600/15 rounded-full blur-[100px] absolute bottom-[-110px] left-[-90px]"></div>
+
+          <div className="relative z-10 flex flex-col gap-7">
+
+            <div className="flex flex-col lg:flex-row justify-between gap-7">
+
+              <div className="flex flex-col justify-center">
+                <p className="text-indigo-300 text-[13px] md:text-[15px] tracking-[4px] uppercase">Monkeytype Profile</p>
+                <h1 className="text-[42px] md:text-[64px] font-black theme-text-strong leading-none mt-3">{username}</h1>
+                <p className="theme-text-soft text-[15px] md:text-[17px] mt-3">{profile?.details?.bio??"Real typing performance synced from Monkeytype"}</p>
+
+                <div className="flex flex-wrap items-center gap-3 mt-4 theme-text-soft text-[14px]">
+                  <span>level {level}</span>
+                  <span className="w-[5px] h-[5px] rounded-full bg-white/20"></span>
+                  <span>{xp?`${xp.toLocaleString()} xp`:"xp hidden"}</span>
+                  <span className="w-[5px] h-[5px] rounded-full bg-white/20"></span>
+                  <span>{profile?.isPremium?"premium":"typing profile"}</span>
+                </div>
+
+                <div className="w-full sm:w-[420px] h-[10px] rounded-full bg-white/10 overflow-hidden mt-4">
+                  <div className="h-full rounded-full bg-linear-to-r from-purple-500 via-indigo-500 to-blue-500" style={{width:`${xpPercent}%`}}></div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3 w-full lg:w-[480px]">
+                <TopMiniCard title="avg wpm" value={avgWpm.toFixed(0)}/>
+                <TopMiniCard title="avg raw" value={avgRaw.toFixed(0)}/>
+                <TopMiniCard title="avg acc" value={`${avgAcc.toFixed(1)}%`}/>
+              </div>
+
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <ProfileStatCard title="completed" value={completed.toLocaleString()} active/>
+              <ProfileStatCard title="started" value={started.toLocaleString()}/>
+              <ProfileStatCard title="time typing" value={`${typingHours}h`}/>
+              <ProfileStatCard title="mode" value={mode}/>
+            </div>
+
+          </div>
+        </div>
 
         <div className="mb-[6%] text-center lg:text-left">
           <p className="text-purple-300 text-[14px] md:text-[18px] tracking-[3px] md:tracking-[4px] uppercase">Monkeytype Live Data</p>
@@ -120,6 +224,24 @@ export default function Stats(){
 
       </div>
 
+    </div>
+  )
+}
+
+function TopMiniCard({title,value}:{title:string,value:string|number}){
+  return(
+    <div className="min-h-[115px] rounded-[24px] border border-indigo-400/20 bg-indigo-500/[0.07] backdrop-blur-xl p-4 flex flex-col justify-between hover:bg-purple-500/[0.10] hover:border-purple-400/40 transition-all duration-300">
+      <p className="text-indigo-200/70 uppercase tracking-[2px] text-[11px]">{title}</p>
+      <h2 className="text-[30px] md:text-[38px] font-black theme-text-strong leading-none">{value}</h2>
+    </div>
+  )
+}
+
+function ProfileStatCard({title,value,active}:{title:string,value:string|number,active?:boolean}){
+  return(
+    <div className={`rounded-[24px] border p-5 backdrop-blur-xl transition-all duration-300 ${active?"border-indigo-400/40 bg-indigo-500/[0.10]":"border-white/10 bg-white/[0.04]"}`}>
+      <p className="theme-text-soft uppercase tracking-[2px] text-[11px] md:text-[12px]">{title}</p>
+      <h3 className={`text-[26px] md:text-[34px] font-black mt-2 leading-none ${active?"text-indigo-300":"theme-text-strong"}`}>{value}</h3>
     </div>
   )
 }
