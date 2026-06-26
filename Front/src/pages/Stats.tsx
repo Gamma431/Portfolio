@@ -28,31 +28,44 @@ type StatsResponse={
   resultsData?:ResultData[]
 }
 
+type MonkeyProfileObject={
+  name?:string
+  xp?:number
+  streak?:number
+  maxStreak?:number
+  isPremium?:boolean
+  typingStats?:{completedTests?:number,startedTests?:number,timeTyping?:number}
+  details?:{bio?:string}
+}
+
 type MonkeyProfileResponse={
-  profile:{
-    name?:string
-    xp?:number
-    streak?:number
-    maxStreak?:number
-    isPremium?:boolean
-    typingStats?:{completedTests?:number,startedTests?:number,timeTyping?:number}
-    details?:{bio?:string}
-  }|null
-  last:LastData|null
+  profile?:MonkeyProfileObject|null
+  data?:MonkeyProfileObject|null
+  last?:LastData|null
+  message?:string
 }|null
 
 export default function Stats(){
   const [data,setData]=useState<StatsResponse|null>(null)
   const [profileData,setProfileData]=useState<MonkeyProfileResponse>(null)
   const [loading,setLoading]=useState(true)
+  const [slowLoading,setSlowLoading]=useState(false)
   const [error,setError]=useState<string|null>(null)
 
   const backendUrl="https://portfolioback-oh5r.onrender.com"
 
   useEffect(()=>{
+    let alive=true
+
+    const slowTimer=window.setTimeout(()=>{
+      if(alive) setSlowLoading(true)
+    },15000)
+
     async function fetchData(){
       try{
         setLoading(true)
+        setSlowLoading(false)
+
         const res=await fetch(`${backendUrl}/api/stats`)
         if(!res.ok) throw new Error("Failed to fetch stats")
         const json=await res.json()
@@ -70,17 +83,26 @@ export default function Stats(){
       }catch(err){
         setError(err instanceof Error?err.message:"Error")
       }finally{
-        setLoading(false)
+        if(alive){
+          setLoading(false)
+          clearTimeout(slowTimer)
+        }
       }
     }
+
     fetchData()
+
+    return()=>{
+      alive=false
+      clearTimeout(slowTimer)
+    }
   },[])
 
-  if(loading) return <div className="min-h-screen flex justify-center items-center text-purple-400 text-2xl">Loading stats...</div>
+  if(loading) return <LoadingScene slowLoading={slowLoading}/>
   if(error) return <div className="min-h-screen flex justify-center items-center text-red-400 text-2xl">{error}</div>
   if(!data) return null
 
-  const profile=profileData?.profile
+  const profile=profileData?.profile??profileData?.data??null
   const profileStats=profile?.typingStats
   const wpm=data.lastData?.wpm??0
   const raw=data.lastData?.rawWpm??0
@@ -90,12 +112,12 @@ export default function Stats(){
   const started=profileStats?.startedTests??data.statsData?.startedTests??0
   const timeTyping=profileStats?.timeTyping??data.statsData?.timeTyping??0
   const typingHours=Math.round(timeTyping/3600)
-  const duration=data.lastData?.testDuration?.toFixed(0)??0
+  const duration=data.lastData?.testDuration?.toFixed(0)??"0"
   const mode=`${data.lastData?.mode??"time"} ${data.lastData?.mode2??""}`
-  const graph=data.graph.length?data.graph:data.lastData?.chartData?.wpm??[]
+  const graph=(data.graph?.length?data.graph:data.lastData?.chartData?.wpm)??[]
   const max=Math.max(...graph,1)
   const username="Shiroiha"
-  const xp=profile?.xp??0
+  const xp=Number(profile?.xp??0)
   const level=xp?Math.floor(Math.sqrt(xp/100)):0
   const xpPercent=xp?Math.min(100,Math.floor((xp%1000)/10)):45
   const resultList=data.resultsData??[]
@@ -224,6 +246,44 @@ export default function Stats(){
 
       </div>
 
+    </div>
+  )
+}
+
+function LoadingScene({slowLoading}:{slowLoading:boolean}){
+  return(
+    <div className="w-full min-h-screen relative overflow-hidden flex justify-center items-center bg-black theme-text">
+      <div className="w-[320px] h-[320px] bg-indigo-700/20 rounded-full blur-[120px] absolute top-[15%] left-[-10%]"></div>
+      <div className="w-[360px] h-[360px] bg-purple-700/20 rounded-full blur-[130px] absolute bottom-[10%] right-[-12%]"></div>
+
+      <div className="relative z-10 flex flex-col items-center gap-7 px-6 text-center">
+        <div className="relative w-[130px] h-[130px] flex justify-center items-center">
+          <div className="absolute inset-0 rounded-full border border-indigo-400/20 animate-ping"></div>
+          <div className="absolute inset-3 rounded-full border-t-2 border-indigo-400 animate-spin"></div>
+          <div className="absolute inset-7 rounded-full border-b-2 border-purple-400 animate-spin"></div>
+          <div className="w-[42px] h-10.5 rounded-2xl bg-linear-to-br from-purple-500 via-indigo-500 to-blue-500 shadow-lg shadow-indigo-900/40 animate-pulse"></div>
+        </div>
+
+        <div>
+          <p className="text-indigo-300 text-[13px] md:text-[15px] tracking-[4px] uppercase">Monkeytype API</p>
+          <h1 className="text-[34px] md:text-[48px] font-black theme-text-strong mt-3">Loading stats</h1>
+          <p className="theme-text-soft text-[15px] md:text-[17px] mt-3">Waking up the backend and pulling fresh typing data...</p>
+        </div>
+
+        <div className="flex gap-2">
+          <span className="w-3 h-3 rounded-full bg-purple-400 animate-bounce"></span>
+          <span className="w-3 h-3 rounded-full bg-indigo-400 animate-bounce [animation-delay:150ms]"></span>
+          <span className="w-3 h-3 rounded-full bg-blue-400 animate-bounce [animation-delay:300ms]"></span>
+        </div>
+
+        {slowLoading&&(
+          <div className="max-w-130 rounded-3xl border border-indigo-400/30 bg-indigo-500/[0.08] backdrop-blur-xl p-5">
+            <h2 className="text-indigo-200 text-[20px] font-bold">Host is taking too long</h2>
+            <p className="theme-text-soft mt-2">The backend host may be sleeping or stuck. Refresh the site once.</p>
+            <button onClick={()=>window.location.reload()} className="mt-4 px-5 py-3 rounded-2xl bg-indigo-500/20 border border-indigo-400/40 text-indigo-200 hover:bg-indigo-500/30 transition-all duration-300">Refresh site</button>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

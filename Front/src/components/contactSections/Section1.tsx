@@ -1,167 +1,159 @@
-import {useRef,useState} from "react"
+import {useState} from "react"
+import type {FormEvent,ChangeEvent} from "react"
 import emailjs from "@emailjs/browser"
-import MessageSent from "../MessageSent"
 
-export default function Section1(){
+type FormData={
+  name:string
+  email:string
+  subject:string
+  message:string
+}
 
-  const form=useRef<HTMLFormElement>(null)
-  const [isSent,setIsSent]=useState(false)
+export default function Contact(){
+  const [form,setForm]=useState<FormData>({name:"",email:"",subject:"",message:""})
+  const [loading,setLoading]=useState(false)
+  const [status,setStatus]=useState<"idle"|"success"|"error">("idle")
 
-  const sendEmail=(e:React.FormEvent)=>{
+  const serviceId=import.meta.env.VITE_EMAILJS_SERVICE_ID
+  const templateId=import.meta.env.VITE_EMAILJS_TEMPLATE_ID
+  const publicKey=import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+
+  function handleChange(e:ChangeEvent<HTMLInputElement|HTMLTextAreaElement>){
+    setForm({...form,[e.target.name]:e.target.value})
+    setStatus("idle")
+  }
+
+  async function handleSubmit(e:FormEvent<HTMLFormElement>){
     e.preventDefault()
+    if(!form.name.trim()||!form.email.trim()||!form.message.trim()){
+      setStatus("error")
+      return
+    }
 
-    if(!form.current) return
+    try{
+      setLoading(true)
+      setStatus("idle")
 
-    emailjs
-      .sendForm(
-        "service_qs6wewv",
-        "template_gpv9kfd",
-        form.current,
-        "GK6zfgxfh5N_i625Y"
-      )
-      .then(()=>{
-        setIsSent(true)
-        form.current?.reset()
-      })
-      .catch((err)=>{
-        console.log(err)
-        alert(err.text||"Something went wrong")
-      })
+      await emailjs.send(serviceId,templateId,{
+        from_name:form.name,
+        from_email:form.email,
+        subject:form.subject||"Portfolio contact message",
+        message:form.message
+      },publicKey)
+
+      setForm({name:"",email:"",subject:"",message:""})
+      setStatus("success")
+    }catch(err){
+      console.log(err)
+      setStatus("error")
+    }finally{
+      setLoading(false)
+    }
   }
 
   return(
-    <div className="w-full min-h-screen theme-text flex flex-col lg:flex-row justify-center items-start text-[20px] gap-[3%] px-[5%] pb-[5%] pt-[14vh]">
+    <main className="w-full min-h-screen px-[5%] pt-[14vh] pb-[7%] relative overflow-hidden theme-text">
 
-      <div className="w-full lg:w-[50%] min-h-[850px] p-[5%] rounded-4xl border theme-border theme-card theme-shadow flex flex-col gap-[3%] justify-center items-start">
+      <div className="w-[320px] md:w-[520px] h-[320px] md:h-[520px] bg-purple-700/20 rounded-full blur-[130px] md:blur-[170px] absolute top-[8%] left-[-25%] md:left-[-10%]"></div>
+      <div className="w-[320px] md:w-[520px] h-[320px] md:h-[520px] bg-indigo-700/20 rounded-full blur-[130px] md:blur-[170px] absolute bottom-[5%] right-[-25%] md:right-[-10%]"></div>
 
-        <div className="w-[180px] h-[45px] bg-linear-to-r from-blue-400 to-indigo-800 border theme-border rounded-2xl flex justify-center items-center text-[16px]">
-          Get In Touch
+      <section className="w-full relative z-10 flex flex-col gap-12">
+
+        <div className="w-full text-center lg:text-left flex flex-col gap-4">
+          <p className="text-purple-300 text-[14px] md:text-[18px] tracking-[4px] uppercase">Contact</p>
+          <h1 className="text-[46px] md:text-[68px] lg:text-[82px] font-black leading-none text-transparent bg-clip-text bg-linear-to-r from-purple-400 via-indigo-400 to-blue-400">Get In Touch</h1>
+          <p className="theme-text-soft text-[17px] md:text-[21px] max-w-[760px] mx-auto lg:mx-0">Have a project, idea, or collaboration in mind? Send me a message and I’ll reply when I can.</p>
         </div>
 
-        <h2 className="text-[36px] md:text-[42px] lg:text-[50px]">
-          Lets build something amazing <strong className="color-p">together</strong>
-        </h2>
+        <div className="w-full grid grid-cols-1 lg:grid-cols-[0.9fr_1.4fr] gap-7 lg:gap-9">
 
-        <p className="theme-text-soft">
-          Have an idea, a project, or just want to say hi?
-          <br/>
-          Im always open to discussing new opportunities
-          <br/>
-          and interesting projects
-        </p>
+          <div className="flex flex-col gap-5">
 
-        <div className="w-full flex flex-col md:grid md:grid-cols-2 gap-[3%]">
+            <InfoCard title="Email" value="ghazaryanarman843@gmail.com" info="Best way to reach me"/>
+            <InfoCard title="Location" value="Armenia" info="Available for remote work"/>
+            <InfoCard title="Focus" value="Frontend / Web Apps" info="React, TypeScript, Tailwind, Node"/>
 
-          <div className="min-h-[110px] flex justify-center items-center text-xl rounded-2xl border theme-border theme-card gap-[2%]">
-            <img className="h-[40px]" src="https://img.icons8.com/?size=100&id=gqzoIBeh8sR2&format=png&color=000000" alt=""/>
-            <a className="text-[14px]" href="mailto:ghazaryanarman843@gmail.com">
-              ghazaryanarman843@gmail.com
-            </a>
+            <div className="rounded-[32px] border theme-border theme-card backdrop-blur-xl theme-shadow p-6 md:p-8 flex flex-col gap-5">
+              <h2 className="text-[26px] md:text-[32px] font-bold theme-text-strong">Let’s build clean</h2>
+              <p className="theme-text-soft text-[15px] md:text-[17px] leading-7">I care about good UI, smooth interactions, responsive layouts, and real working projects. If the idea is serious, I’m open to talk.</p>
+              <div className="flex flex-wrap gap-3">
+                <Tag text="React"/>
+                <Tag text="TypeScript"/>
+                <Tag text="Tailwind"/>
+                <Tag text="Backend API"/>
+              </div>
+            </div>
+
           </div>
 
-          <div className="min-h-[110px] flex justify-center items-center text-xl rounded-2xl border theme-border theme-card gap-[2%]">
-            <img className="h-[40px]" src="https://img.icons8.com/?size=100&id=vjqZo0sZlesU&format=png&color=000000" alt=""/>
-            <a href="https://github.com/Gamma431">
-              Gamma431
-            </a>
-          </div>
+          <form onSubmit={handleSubmit} className="rounded-[35px] border theme-border theme-card backdrop-blur-xl theme-shadow p-6 md:p-8 lg:p-10 flex flex-col gap-6">
 
-          <div className="min-h-[110px] flex justify-center items-center text-xl rounded-2xl border theme-border theme-card gap-[2%]">
-            <img className="h-[40px]" src="https://img.icons8.com/?size=100&id=LTvptsXhcJki&format=png&color=000000" alt=""/>
-            <span>@ZaSekai</span>
-          </div>
+            <div className="flex flex-col gap-2 mb-2">
+              <h2 className="text-[30px] md:text-[38px] font-black theme-text-strong">Send Message</h2>
+              <p className="theme-text-soft text-[15px] md:text-[17px]">Fill the form and it will go straight to my email.</p>
+            </div>
 
-          <div className="min-h-[110px] flex justify-center items-center text-xl rounded-2xl border theme-border theme-card gap-[2%]">
-            <img className="h-[40px]" src="https://img.icons8.com/?size=100&id=ZyMOv5S0hHtV&format=png&color=000000" alt=""/>
-            <span>Arman Ghazaryan</span>
-          </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <Input label="Your Name" name="name" type="text" value={form.name} placeholder="Enter your name" onChange={handleChange}/>
+              <Input label="Your Email" name="email" type="email" value={form.email} placeholder="Enter your email" onChange={handleChange}/>
+            </div>
+
+            <Input label="Subject" name="subject" type="text" value={form.subject} placeholder="Project, question, collaboration..." onChange={handleChange}/>
+
+            <div className="flex flex-col gap-3">
+              <label className="theme-text-soft text-[14px] uppercase tracking-[2px]">Message</label>
+              <textarea name="message" value={form.message} onChange={handleChange} placeholder="Write your message..." className="w-full min-h-[180px] resize-none rounded-[24px] border theme-border bg-white/[0.04] px-5 py-4 outline-none theme-text-strong placeholder:text-white/30 focus:border-purple-400/50 focus:bg-purple-500/[0.05] transition-all duration-300"></textarea>
+            </div>
+
+            {status==="success"&&(
+              <div className="rounded-2xl border border-green-400/30 bg-green-500/10 px-5 py-4 text-green-300">
+                Message sent successfully.
+              </div>
+            )}
+
+            {status==="error"&&(
+              <div className="rounded-2xl border border-red-400/30 bg-red-500/10 px-5 py-4 text-red-300">
+                Something went wrong. Check the fields or EmailJS keys.
+              </div>
+            )}
+
+            <button disabled={loading} className="w-full md:w-fit px-8 py-4 rounded-[22px] bg-linear-to-r from-purple-600 via-indigo-600 to-blue-600 text-white font-bold shadow-lg shadow-indigo-900/30 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300">
+              {loading?"Sending...":"Send Message"}
+            </button>
+
+          </form>
 
         </div>
 
-        <div className="w-full min-h-[130px] flex flex-col md:flex-row border theme-border rounded-2xl theme-card justify-evenly items-center py-[3%] gap-[3%]">
+      </section>
 
-          <div className="w-20 h-20 bg-green-600/10 rounded-full flex justify-center items-center">
-            <div className="w-6 h-6 bg-green-600 rounded-full"></div>
-          </div>
+    </main>
+  )
+}
 
-          <div className="w-full md:w-[40%] text-center md:text-left">
-            <strong className="theme-text-strong text-[16px]">
-              Currently available for work
-            </strong>
-            <p className="text-[16px] theme-text-soft">
-              Open to Freelance projects and full-time opportunities
-            </p>
-          </div>
-
-          <a
-            href="/Arman_Ghazaryan_Resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-[220px] h-[55px] rounded-2xl border border-indigo-500/70 bg-indigo-500/10 flex justify-center items-center"
-          >
-            View Resume
-          </a>
-
-        </div>
-
-      </div>
-
-      <div className="w-full lg:w-[50%] min-h-[850px] p-[5%] rounded-4xl border theme-border theme-card theme-shadow flex flex-col gap-[3%] justify-center items-center mt-[5%] lg:mt-0">
-
-        {isSent ? (
-          <MessageSent/>
-        ) : (
-          <>
-            <h3 className="text-[32px] md:text-[40px] theme-text-strong">
-              Send me a message
-            </h3>
-
-            <p className="text-[16px] theme-text-soft">
-              I'll get back to you as soon as possible.
-            </p>
-
-            <form
-              ref={form}
-              onSubmit={sendEmail}
-              className="w-full flex flex-col gap-[4%] justify-center"
-            >
-
-              <input
-                type="text"
-                name="user_name"
-                placeholder="Your Name"
-                className="w-full h-[60px] rounded-3xl border theme-border theme-card px-[5%] outline-none"
-                required
-              />
-
-              <input
-                type="email"
-                name="user_email"
-                placeholder="Your Email"
-                className="w-full h-[60px] rounded-3xl border theme-border theme-card px-[5%] outline-none"
-                required
-              />
-
-              <textarea
-                name="message"
-                placeholder="Tell me about your project..."
-                className="w-full min-h-[250px] rounded-3xl border theme-border theme-card p-[5%] outline-none resize-none"
-                required
-              />
-
-              <button
-                type="submit"
-                className="w-full h-[60px] rounded-3xl border border-indigo-500/50 bg-linear-to-r from-blue-500/20 to-indigo-500/20 hover:scale-[1.02] transition-all duration-300"
-              >
-                Send Message →
-              </button>
-
-            </form>
-          </>
-        )}
-
-      </div>
-
+function Input({label,name,type,value,placeholder,onChange}:{label:string,name:string,type:string,value:string,placeholder:string,onChange:(e:React.ChangeEvent<HTMLInputElement>)=>void}){
+  return(
+    <div className="flex flex-col gap-3">
+      <label className="theme-text-soft text-[14px] uppercase tracking-[2px]">{label}</label>
+      <input name={name} type={type} value={value} placeholder={placeholder} onChange={onChange} className="w-full h-[58px] rounded-[22px] border theme-border bg-white/[0.04] px-5 outline-none theme-text-strong placeholder:text-white/30 focus:border-purple-400/50 focus:bg-purple-500/[0.05] transition-all duration-300"/>
     </div>
+  )
+}
+
+function InfoCard({title,value,info}:{title:string,value:string,info:string}){
+  return(
+    <div className="rounded-[28px] border theme-border theme-card backdrop-blur-xl theme-shadow p-6 md:p-7 flex flex-col gap-3 hover:border-purple-400/40 hover:bg-purple-500/[0.06] transition-all duration-300">
+      <p className="theme-text-soft text-[13px] uppercase tracking-[2px]">{title}</p>
+      <h3 className="text-[20px] md:text-[24px] font-bold theme-text-strong break-words">{value}</h3>
+      <p className="theme-text-soft text-[14px] md:text-[15px]">{info}</p>
+    </div>
+  )
+}
+
+function Tag({text}:{text:string}){
+  return(
+    <span className="px-4 py-2 rounded-full border border-indigo-400/30 bg-indigo-500/[0.08] text-indigo-200 text-[13px]">
+      {text}
+    </span>
   )
 }
