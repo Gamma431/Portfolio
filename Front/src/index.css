@@ -26,15 +26,15 @@ body:has(.theme-dark){
   background:#050010;
 }
 
-.bg-linear-to-r{
+.bg-gradient-to-r{
   background-image:linear-gradient(to right,var(--tw-gradient-stops))!important;
 }
 
-.bg-linear-to-br{
+.bg-gradient-to-br{
   background-image:linear-gradient(to bottom right,var(--tw-gradient-stops))!important;
 }
 
-.bg-linear-to-t{
+.bg-gradient-to-t{
   background-image:linear-gradient(to top,var(--tw-gradient-stops))!important;
 }
 

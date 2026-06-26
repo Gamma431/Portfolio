@@ -61,7 +61,7 @@ export default function Contact(){
 
         <div className="w-full text-center lg:text-left flex flex-col gap-4">
           <p className="text-purple-300 text-[14px] md:text-[18px] tracking-[4px] uppercase">Contact</p>
-          <h1 className="text-[46px] md:text-[68px] lg:text-[82px] font-black leading-none text-transparent bg-clip-text bg-linear-to-r from-purple-400 via-indigo-400 to-blue-400">Get In Touch</h1>
+          <h1 className="text-[46px] md:text-[68px] lg:text-[82px] font-black leading-none text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-indigo-400 to-blue-400">Get In Touch</h1>
           <p className="theme-text-soft text-[17px] md:text-[21px] max-w-[760px] mx-auto lg:mx-0">Have a project, idea, or collaboration in mind? Send me a message and I’ll reply when I can.</p>
         </div>
 
@@ -117,7 +117,7 @@ export default function Contact(){
               </div>
             )}
 
-            <button disabled={loading} className="w-full md:w-fit px-8 py-4 rounded-[22px] bg-linear-to-r from-purple-600 via-indigo-600 to-blue-600 text-white font-bold shadow-lg shadow-indigo-900/30 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300">
+            <button disabled={loading} className="w-full md:w-fit px-8 py-4 rounded-[22px] bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white font-bold shadow-lg shadow-indigo-900/30 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300">
               {loading?"Sending...":"Send Message"}
             </button>
 

@@ -156,7 +156,7 @@ export default function Stats(){
                 </div>
 
                 <div className="w-full sm:w-[420px] h-[10px] rounded-full bg-white/10 overflow-hidden mt-4">
-                  <div className="h-full rounded-full bg-linear-to-r from-purple-500 via-indigo-500 to-blue-500" style={{width:`${xpPercent}%`}}></div>
+                  <div className="h-full rounded-full bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500" style={{width:`${xpPercent}%`}}></div>
                 </div>
               </div>
 
@@ -180,7 +180,7 @@ export default function Stats(){
 
         <div className="mb-[6%] text-center lg:text-left">
           <p className="text-purple-300 text-[14px] md:text-[18px] tracking-[3px] md:tracking-[4px] uppercase">Monkeytype Live Data</p>
-          <h1 className="text-[45px] md:text-[60px] lg:text-[70px] font-bold text-transparent bg-clip-text bg-linear-to-r from-purple-400 via-indigo-400 to-blue-400">Typing Stats</h1>
+          <h1 className="text-[45px] md:text-[60px] lg:text-[70px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-indigo-400 to-blue-400">Typing Stats</h1>
           <p className="theme-text-soft text-[17px] md:text-[20px]">Real performance data pulled from my Monkeytype profile</p>
         </div>
 
@@ -211,7 +211,7 @@ export default function Stats(){
           <div className="w-full h-[220px] flex gap-2 items-end overflow-x-auto pb-3">
             {graph.map((num,i)=>(
               <div key={i} className="min-w-[26px] sm:min-w-0 sm:flex-1 flex flex-col items-center gap-2">
-                <div className="w-full rounded-t-2xl bg-linear-to-t from-indigo-700 via-purple-500 to-fuchsia-300 shadow-lg shadow-purple-900/30" style={{height:`${(num/max)*200}px`}}></div>
+                <div className="w-full rounded-t-2xl bg-gradient-to-t from-indigo-700 via-purple-500 to-fuchsia-300 shadow-lg shadow-purple-900/30" style={{height:`${(num/max)*200}px`}}></div>
                 <span className="text-[11px] md:text-[12px] theme-text-soft">{num}</span>
               </div>
             ))}
@@ -261,7 +261,7 @@ function LoadingScene({slowLoading}:{slowLoading:boolean}){
           <div className="absolute inset-0 rounded-full border border-indigo-400/20 animate-ping"></div>
           <div className="absolute inset-3 rounded-full border-t-2 border-indigo-400 animate-spin"></div>
           <div className="absolute inset-7 rounded-full border-b-2 border-purple-400 animate-spin"></div>
-          <div className="w-[42px] h-10.5 rounded-2xl bg-linear-to-br from-purple-500 via-indigo-500 to-blue-500 shadow-lg shadow-indigo-900/40 animate-pulse"></div>
+          <div className="w-[42px] h-10.5 rounded-2xl bg-gradient-to-br from-purple-500 via-indigo-500 to-blue-500 shadow-lg shadow-indigo-900/40 animate-pulse"></div>
         </div>
 
         <div>
