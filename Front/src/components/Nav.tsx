@@ -18,7 +18,7 @@ export default function Nav({dark,setDark}:NavProps){
 
   return(
     <>
-      <div className={`w-[95%] lg:w-[82%] h-[8vh] lg:h-[10vh] fixed top-[2%] left-0 right-0 mx-auto z-[999] rounded-3xl flex items-center justify-between px-[4%] lg:px-[2%] backdrop-blur-xl shadow-2xl transition-all duration-300 ${dark?"border theme-border theme-surface theme-shadow theme-text":"border border-black/10 bg-white/50 theme-shadow text-black/70"}`}>
+      <div className={`w-[95%] lg:w-[82%] h-[8vh] lg:h-[10vh] fixed top-[2%] left-0 right-0 mx-auto z-[999] rounded-3xl flex items-center justify-between px-[4%] lg:px-[2%] backdrop-blur-[10px] shadow-2xl transition-all duration-300 ${dark?"border theme-border theme-surface theme-shadow theme-text":"border border-black/10 bg-white/50 theme-shadow text-black/70"}`}>
 
         <h1 className="theme-text text-[20px] md:text-[28px] lg:text-[35px]">
           <strong className="color-s">&lt;Shiroiha</strong><span className="color-p">Portfolio</span>/&gt;

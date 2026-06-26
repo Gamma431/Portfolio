@@ -46,8 +46,7 @@ export default function Projects(){
   return(
     <main className="w-full min-h-screen theme-text relative overflow-hidden px-[5%] pt-[14vh] pb-[7%]">
 
-      <div className="w-[320px] md:w-[520px] h-[320px] md:h-[520px] bg-purple-700/20 rounded-full blur-[130px] md:blur-[170px] absolute top-[7%] left-[-25%] md:left-[-10%]"></div>
-      <div className="w-[320px] md:w-[520px] h-[320px] md:h-[520px] bg-indigo-700/20 rounded-full blur-[130px] md:blur-[170px] absolute bottom-[8%] right-[-25%] md:right-[-10%]"></div>
+
 
       <section className="w-full relative z-10 flex flex-col gap-14">
 

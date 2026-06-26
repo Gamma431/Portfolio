@@ -31,6 +31,7 @@ dark
 : "theme-light min-h-screen transition-all duration-300"
 }>
       <HashRouter>
+        
         <ScrollToTop/>
         <Nav dark={dark} setDark={setDark}/>
         <AnimateRoutes/>
