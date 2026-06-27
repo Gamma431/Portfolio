@@ -16,6 +16,34 @@ body{
   background:#050010;
 }
 
+html,body,#root{
+  background:var(--main-bg,#050010);
+}
+
+.grad-text-primary{
+  background:linear-gradient(90deg,#c084fc 0%,#818cf8 48%,#60a5fa 100%)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+}
+
+.grad-bg-primary{
+  background:linear-gradient(90deg,#9333ea 0%,#4f46e5 50%,#2563eb 100%)!important;
+}
+
+.grad-bg-loader{
+  background:linear-gradient(135deg,#a855f7 0%,#6366f1 52%,#3b82f6 100%)!important;
+}
+
+.grad-bg-chart{
+  background:linear-gradient(to top,#4338ca 0%,#a855f7 55%,#f0abfc 100%)!important;
+}
+
+.grad-bg-badge{
+  background:linear-gradient(90deg,#60a5fa 0%,#3730a3 100%)!important;
+}
+
 html:has(.theme-light),
 body:has(.theme-light){
   background:#f8fafc;
@@ -24,18 +52,6 @@ body:has(.theme-light){
 html:has(.theme-dark),
 body:has(.theme-dark){
   background:#050010;
-}
-
-.bg-gradient-to-r{
-  background-image:linear-gradient(to right,var(--tw-gradient-stops))!important;
-}
-
-.bg-gradient-to-br{
-  background-image:linear-gradient(to bottom right,var(--tw-gradient-stops))!important;
-}
-
-.bg-gradient-to-t{
-  background-image:linear-gradient(to top,var(--tw-gradient-stops))!important;
 }
 
 .color-p{
@@ -105,7 +121,7 @@ body:has(.theme-dark){
   --card-2:rgba(255,255,255,.09);
   --surface:rgba(10,8,25,.50);
   --shadow:0 28px 90px rgba(0,0,0,.62);
-  background:var(--main-bg);
+  background:var(--main-bg)!important;
   color:var(--text);
 }
 
@@ -115,12 +131,21 @@ body:has(.theme-dark){
   --text-strong:#020617;
   --text-soft:rgba(51,65,85,.72);
   --border:rgba(99,102,241,.18);
-  --card:rgba(255,255,255,.96);
-  --card-2:rgba(255,255,255,.99);
-  --surface:rgba(255,255,255,.86);
+  --card:#ffffff;
+  --card-2:#ffffff;
+  --surface:rgba(255,255,255,.96);
   --shadow:0 22px 60px rgba(15,23,42,.10);
   background:var(--main-bg)!important;
   color:var(--text);
+}
+
+
+.theme-dark,.theme-light{
+  min-height:100vh;
+}
+
+.theme-dark *,.theme-light *{
+  transition-property:color,background-color,border-color,box-shadow,opacity,transform,filter;
 }
 
 .theme-bg{

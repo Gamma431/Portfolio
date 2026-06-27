@@ -1,6 +1,6 @@
 export default function Footer(){
   return(
-    <footer className="w-full min-h-[60vh] theme-text flex flex-col justify-center items-center px-[5%] py-[8%] border-t theme-border">
+    <footer className="w-full min-h-[60vh] theme-bg theme-text flex flex-col justify-center items-center px-[5%] py-[8%] border-t theme-border">
 
       <div className="w-full flex flex-col justify-center items-center text-center mb-[5%]">
         <p className="text-purple-300 tracking-[4px] uppercase text-[14px] md:text-[16px]">Final Step</p>

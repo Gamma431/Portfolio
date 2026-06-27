@@ -1,6 +1,6 @@
 export default function Section2(){
   return(
-    <div className="w-full min-h-screen border-b theme-border theme-text flex flex-col justify-center items-center text-[25px] gap-[5%] px-[5%] py-[8%]">
+    <div className="w-full min-h-screen border-b theme-border theme-bg theme-text flex flex-col justify-center items-center text-[25px] gap-[5%] px-[5%] py-[8%]">
 
       <h1 className="text-[34px] md:text-[45px] lg:text-[55px] text-center">Featured Projects</h1>
 

@@ -44,7 +44,7 @@ const projects:Project[]=[
 
 export default function Projects(){
   return(
-    <main className="w-full min-h-screen theme-text relative overflow-hidden px-[5%] pt-[14vh] pb-[7%]">
+    <main className="w-full min-h-screen theme-bg theme-text relative overflow-hidden px-[5%] pt-[14vh] pb-[7%]">
 
 
 
@@ -52,7 +52,7 @@ export default function Projects(){
 
         <div className="w-full flex flex-col gap-4 text-center lg:text-left">
           <p className="text-purple-300 text-[14px] md:text-[18px] tracking-[4px] uppercase">Selected Work</p>
-          <h1 className="text-[46px] md:text-[72px] lg:text-[86px] font-black leading-none text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-indigo-400 to-blue-400">Projects</h1>
+          <h1 className="text-[46px] md:text-[72px] lg:text-[86px] font-black leading-none grad-text-primary">Projects</h1>
           <p className="theme-text-soft text-[17px] md:text-[21px] max-w-[850px] mx-auto lg:mx-0">A collection of my main web projects, built with modern frontend design, clean layouts, responsive pages, and real working ideas.</p>
         </div>
 

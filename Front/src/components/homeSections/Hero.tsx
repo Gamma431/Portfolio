@@ -14,7 +14,7 @@ export default function Hero(){
 
         <p className="text-[24px] md:text-[30px] lg:text-[34px] theme-text-soft mb-3">Hi, Im</p>
 
-        <h1 className="text-[76px] md:text-[112px] lg:text-[140px] font-black leading-none text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-indigo-400 to-blue-400">
+        <h1 className="text-[76px] md:text-[112px] lg:text-[140px] font-black leading-none grad-text-primary">
           Arman
         </h1>
 
@@ -27,7 +27,7 @@ export default function Hero(){
         </p>
 
         <div className="w-full flex flex-col sm:flex-row justify-center lg:justify-start gap-4 mt-9">
-          <Link to="/projects" className="w-full sm:w-[210px] h-[62px] rounded-[22px] bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white font-bold flex justify-center items-center shadow-lg shadow-indigo-900/30 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300">
+          <Link to="/projects" className="w-full sm:w-[210px] h-[62px] rounded-[22px] grad-bg-primary text-white font-bold flex justify-center items-center shadow-lg shadow-indigo-900/30 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300">
             View Projects
           </Link>
 

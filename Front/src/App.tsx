@@ -15,7 +15,7 @@ function ScrollToTop(){
 }
 
 export default function App(){
-  const [dark,setDark]=useState(true)
+  const [dark,setDark]=useState(()=>localStorage.getItem("theme")==="light"?false:true)
 
   useEffect(()=>{
     fetch("https://portfolioback-oh5r.onrender.com/api/stats")
@@ -24,11 +24,17 @@ export default function App(){
     .catch(err=>console.log(err))
   },[])
 
+  useEffect(()=>{
+    localStorage.setItem("theme",dark?"dark":"light")
+    document.documentElement.style.background=dark?"#050010":"#f8fafc"
+    document.body.style.background=dark?"#050010":"#f8fafc"
+  },[dark])
+
   return(
     <div className={
 dark
-? "theme-dark min-h-screen transition-all duration-300"
-: "theme-light min-h-screen transition-all duration-300"
+? "theme-dark theme-bg min-h-screen transition-all duration-300"
+: "theme-light theme-bg min-h-screen transition-all duration-300"
 }>
       <HashRouter>
         

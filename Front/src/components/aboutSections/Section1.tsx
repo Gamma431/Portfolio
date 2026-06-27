@@ -4,7 +4,7 @@ export default function Section1(){
 
       <div className="w-full lg:w-[50%] flex flex-col justify-start items-center lg:items-start gap-5 text-center lg:text-left">
 
-        <div className="w-[180px] h-[45px] bg-gradient-to-r from-blue-400 to-indigo-800 border theme-border rounded-2xl flex justify-center items-center text-[16px] text-white shadow-lg shadow-indigo-900/30">
+        <div className="w-[180px] h-[45px] grad-bg-badge border theme-border rounded-2xl flex justify-center items-center text-[16px] text-white shadow-lg shadow-indigo-900/30">
           About Me
         </div>
 

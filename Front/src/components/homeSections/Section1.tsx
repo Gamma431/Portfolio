@@ -44,7 +44,7 @@ export default function Section1(){
           </div>
 
           <h1 className="text-[38px] md:text-[52px] lg:text-[65px] font-black leading-none theme-text-strong">
-            Live <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-indigo-400 to-blue-400">Typing</span> Stats
+            Live <span className="grad-text-primary">Typing</span> Stats
           </h1>
 
           <p className="text-[17px] md:text-[20px] text-center theme-text-soft max-w-[680px] leading-8">
